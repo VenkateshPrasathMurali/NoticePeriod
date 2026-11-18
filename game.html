@@ -11,12 +11,14 @@
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px}
 canvas{width:100%;max-width:672px;height:auto;border-radius:8px;background:#111}
+canvas:fullscreen{width:100vw;height:100vh;max-width:none;border-radius:0;object-fit:fill;background:#111}
+canvas:-webkit-full-screen{width:100vw;height:100vh;max-width:none;border-radius:0;background:#111}
 p{margin:0;font-size:13px;opacity:.75;text-align:center}
 </style>
 </head>
 <body>
 <canvas id="c" width="672" height="480"></canvas>
-<p>WASD / Arrows move · Space attack · Shift dash · R retry floor · Esc pause · M mute (keyboard game)</p>
+<p>WASD / Arrows move · Space attack · Shift dash · R retry floor · Esc pause · F fullscreen · M mute (keyboard game)</p>
 <script>
 const T=32,GW=48,GH=32,cv=document.getElementById('c'),X=cv.getContext('2d'),R=()=>rng?rng():Math.random(),ri=n=>R()*n|0,mb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 let rng=null;
@@ -520,7 +522,7 @@ function draw(){
    tx('Press ENTER to begin',336,350,22,'#ffe27a')}
   else if(S=='dead'){tx('YOU DIED. AGAIN.',336,190,34,'#ff5050');tx('Deaths: '+deaths+' · Score '+score,336,240,18,'#fff');tx('Press ENTER to revive on floor '+fl,336,300,20,'#ffe27a')}
   else if(S=='pause'){drawPause()}else{tx('FREEDOM!',336,170,40,'#7be04a');tx('You torched the tower and drove away in the CEO’s car.',336,225,16,'#fff');tx('Final score '+score+' · Deaths '+deaths,336,265,18,'#fff');tx('Press ENTER to play again',336,330,20,'#ffe27a')}}}
-addEventListener('keydown',e=>{keys[e.code]=true;initAudio();if(e.code=='KeyM'&&!e.repeat)muteToggle();
+addEventListener('keydown',e=>{keys[e.code]=true;initAudio();if(e.code=='KeyF'&&!e.repeat&&S=='play'){e.preventDefault();if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}else{cv.requestFullscreen().catch(()=>{});}return;}if(e.code=='KeyM'&&!e.repeat)muteToggle();
  if(cin&&!e.repeat&&(e.code=='Enter'||e.code=='Space'||e.code=='Escape')&&performance.now()-cin.t0>600){endCin();return}
  if(S=='pause'){if(!e.repeat){if(e.code=='ArrowUp'||e.code=='KeyW')pi=(pi+2)%3;else if(e.code=='ArrowDown'||e.code=='KeyS')pi=(pi+1)%3;else if(e.code=='Escape')resumeG();else if(e.code=='Enter'||e.code=='Space')pauseAct(pi)}return}
  if(e.code=='Escape'&&!e.repeat&&S=='play'){pauseG();return}
